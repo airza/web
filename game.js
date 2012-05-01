@@ -114,6 +114,7 @@ Crafty.scene("main", function () {
 					
 					if(this.y +this.h == box.y){
 						this._yaccel  = this._yspeed = 0
+						this._falling = 0
 					}else if(this.y == box.h+box.y){
 						this._yaccel = this._yspeed = 0
 					}
