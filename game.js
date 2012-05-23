@@ -1,8 +1,28 @@
 var GRAVITY = .25;
 
 Crafty.scene("main", function () {
+
+    Crafty.c("Feet",{
+        
+        init: function() {
+            this.addComponent("2D,DOM,Color,Collision");
+            return this;
+           },
+        Feet: function(dad) {
+            this.x = dad.x;
+            this.y = dad.h+dad.y;
+            this.h = 1;
+            this.w = dad.w;
+            this.color("#000000");
+            dad.attach(this)
+            this.bind('EnterFrame', function() { 
+                collision = this.hit("Wall")
+                dad._falling = !collision;
+            })
+        }
+    });
 	Crafty.background("url('BG.png')")
-    controls = Crafty.c('CustomControls', {
+    Crafty.c('CustomControls', {
         __move: {
             left: false,
             right: false,
@@ -22,8 +42,7 @@ Crafty.scene("main", function () {
             return this;
         }
     })
-
-    physics = Crafty.c("PlayerPhysics", {
+    Crafty.c("PlayerPhysics", {
         _falling: 1,
         _xspeed: 0,
         _xaccel: 0,
@@ -56,7 +75,6 @@ Crafty.scene("main", function () {
 			}
 			findMinReversePercent = function(deltaX, deltaY, vX,vY) {
 			var percent;
-			//this cou
 			if((vX==0)||(deltaX/vX<0)){
 				percent = deltaY/vY
 			}else if((vY==0)||(deltaY/vY<0)){
@@ -86,7 +104,6 @@ Crafty.scene("main", function () {
                 
                 if (!(this._falling) && move.up == true) {
                     this._yspeed += this._jumpthrust
-					this._falling = 1
                 }
                 if (this._falling) {
                     this._yaccel += GRAVITY
@@ -114,7 +131,6 @@ Crafty.scene("main", function () {
 					
 					if(this.y +this.h == box.y){
 						this._yaccel  = this._yspeed = 0
-						this._falling = 0
 					}else if(this.y == box.h+box.y){
 						this._yaccel = this._yspeed = 0
 					}
@@ -158,6 +174,9 @@ Crafty.scene("main", function () {
     }) // for Component 2D
     .color("#FF0000") // for Component Color
     .CustomControls().PlayerPhysics()
+    
+    ff= Crafty.e("Feet").Feet(player);
+    
 
     Crafty.e("2D, DOM, Color, Wall").color("#FF0000") // for Component Color
     .attr({
